@@ -208,7 +208,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 2, z: -10}
+  m_LocalPosition: {x: 1, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -244,12 +244,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74c81cd3bde2be48a14913a4fbf940f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  row: 5
-  column: 5
-  block: {fileID: 5210055328196327617, guid: 52b6b276246690b4b84f58af53fe5b6d, type: 3}
-  curveblock: {fileID: 3463714674270977828, guid: 0bf3320b892ad9948858544d717768ff, type: 3}
-  color: {r: 0.6509804, g: 0.33333334, b: 0.31764707, a: 1}
-  point: {x: 1, y: 2}
+  row: 4
+  column: 4
+  blocks:
+  - {fileID: 5210055328196327617, guid: 52b6b276246690b4b84f58af53fe5b6d, type: 3}
+  - {fileID: 3214037702388464731, guid: bd03d6b756eee8f4dae524cbd6d3b410, type: 3}
+  - {fileID: 5249399947026450571, guid: d04ec8632d1086140ad0cda32d9c254a, type: 3}
+  - {fileID: 551525090560621984, guid: 7ceeba0a7430c014682cc0b317a22d6b, type: 3}
+  - {fileID: 4744745837546471526, guid: 1b40eb22da7f6cb40b2e28d4a6fffb41, type: 3}
+  - {fileID: 4494431055299339014, guid: 87d0257f5977a4141b5b0a41d0c87958, type: 3}
+  - {fileID: 7586964676943266240, guid: 29d5c136737a339488245aca851bcdcd, type: 3}
 --- !u!4 &2036224888
 Transform:
   m_ObjectHideFlags: 0

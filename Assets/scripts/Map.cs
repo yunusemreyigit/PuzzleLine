@@ -1,59 +1,84 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class Map : MonoBehaviour
 {
     [SerializeField] private int row = 3, column = 3;
     int[,] mapLogic;
-    Block[,] mapInterface;
-    [SerializeField] private Block block;
-    [SerializeField] private Block curveblock;
+    [SerializeField] private Block[] blocks;
     private Vector2 startPoint;
     private Vector2 endPoint;
-    public Color color;
-    public Vector2 point;
+    private Vector2 startPointMap, endPointMap;
     bool isStartExist, isEndExist;
+    List<Vector2> solutionMap;
+    private void Start()
+    {
+        solutionMap = new List<Vector2>();
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
-            createMap();
+            methodsStart();
         if (Input.GetKeyDown(KeyCode.W))
-            createPuzzle();
+        {
+            Vector2 v1 = new Vector2(1, 1);
+            Vector2 v2 = new Vector2(2, 1);
+            Vector2 v3 = new Vector2(2, 2);
+
+            Debug.Log(v2 - v1);
+            Debug.Log(v3 - v2);
+            if ((v2 - v1) == Vector2.right)
+            {
+                (v2 - v1).Normalize();
+                Debug.Log("right");
+            }
+            if ((v3 - v2) == Vector2.up)
+            {
+                Debug.Log("up");
+            }
+
+        }
+
     }
-    // Creates map interfaces
-    [ContextMenu(nameof(createMap))]
-    private void createMap()
+    [ContextMenu(nameof(methodsStart))]
+    void methodsStart()
     {
+        solutionMap.Clear();
         createMapLogic();
         movePointer();
-        mapInterface = new Block[row, column];
-        var parent = new GameObject("Blocks");
+        createBlocks();
+        createMap();
+        cameraPosition();
+    }
+    // Creates map interfaces
+    private void createMap()
+    {
+        var parent = GameObject.Find("Blocks");
+        if (parent != null) Destroy(parent);
+        parent = new GameObject("Blocks");
         for (var i = 0; i < row; i++)
         {
             for (var j = 0; j < column; j++)
             {
-                var instance = Instantiate(block, new Vector2(i, j), Quaternion.identity);
-                instance.name = i + "," + j;
-                if (mapLogic[i, j] == 1)
-                {
-                    instance.GetComponent<SpriteRenderer>().color = color;
-                }
-                instance.transform.SetParent(parent.transform);
-                mapInterface[i, j] = instance;
+                if (mapLogic[i, j] == 10) continue;
+                Block block = blockDecider(mapLogic[i, j], i, j);
+                block.transform.SetParent(parent.transform);
             }
         }
-        cameraPosition();
     }
+
     // Deletes maplogic and creates new maplogic
     // Deletes blocks objects
-    private void remakeMapLogic()
+    private void remakeMapPointer()
     {
-        var parent = GameObject.Find("Blocks");
-        Destroy(parent);
-        createMap();
+        solutionMap.Clear();
+        mapLogicClear();
+        movePointer();
     }
     // Creates an array with all values 0
     // and selects a start point that on the edge of the array
@@ -62,36 +87,72 @@ public class Map : MonoBehaviour
         isStartExist = false;
         isEndExist = false;
         mapLogic = new int[row, column];
+        mapLogicClear();
+        while (!isStartExist)
+        {
+            int i = UnityEngine.Random.value < .5f ? 0 : row - 1;
+            int j = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            startPoint = new Vector2(i, j);
+            if (j == (column - 1) && (i != 0 || i == (row - 1)))
+            {
+                startPointMap = new Vector2(i, j + 1);
+            }
+            else if (j == 0 && (i != 0 || i == (row - 1)))
+            {
+                startPointMap = new Vector2(i, j - 1);
+            }
+            else if (i == 0)
+            {
+                startPointMap = new Vector2(i - 1, j);
+            }
+            else if (i == (row - 1))
+            {
+                startPointMap = new Vector2(i + 1, j);
+            }
+            // Debug.Log("Start Point : " + startPoint);
+            // Debug.Log("Start Point Map : " + startPointMap);
+            isStartExist = true;
+        }
+        while (!isEndExist || endPoint == startPoint)
+        {
+            int i = UnityEngine.Random.value < .5f ? 0 : row - 1;
+            int j = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            endPoint = new Vector2(i, j);
+            if (j == (column - 1) && (i != 0 || i == (row - 1)))
+            {
+                endPointMap = new Vector2(i, j + 1);
+            }
+            else if (j == 0 && (i != 0 || i == (row - 1)))
+            {
+                endPointMap = new Vector2(i, j - 1);
+            }
+            else if (i == 0)
+            {
+                endPointMap = new Vector2(i - 1, j);
+            }
+            else if (i == (row - 1))
+            {
+                endPointMap = new Vector2(i + 1, j);
+            }
+            // Debug.Log("End Point : " + endPoint);
+            // Debug.Log("End Point Map : " + endPointMap);
+            isEndExist = true;
+        }
+    }
+
+    private void mapLogicClear()
+    {
+        int randx = UnityEngine.Random.Range(0, row);
+        int randy = UnityEngine.Random.Range(0, column);
         for (var i = 0; i < row; i++)
         {
             for (var j = 0; j < column; j++)
             {
-                mapLogic[i, j] = 0;
-
-                if ((j == (column - 1) || j == 0) || (i == 0 || i == (row - 1)))
-                {
-                    int val = 10;
-                    int rand = UnityEngine.Random.Range(0, val);
-                    if (!isStartExist && rand == 1)
-                    {
-                        startPoint = new Vector2(i, j);
-                        Debug.Log("Start Point : " + startPoint);
-                        isStartExist = true;
-                        val--;
-                        continue;
-                    }
-                    if (!isEndExist && rand == 2)
-                    {
-                        endPoint = new Vector2(i, j);
-                        Debug.Log("End Point : " + endPoint);
-                        isEndExist = true;
-                        val--;
-                        continue;
-                    }
-                }
+                mapLogic[i, j] = (i == randx && j == randy) ? 10 : 0;
             }
         }
     }
+
     private void cameraPosition()
     {
 
@@ -99,62 +160,21 @@ public class Map : MonoBehaviour
         float y = (column - 1) / 2.0f;
         Camera.main.transform.position = new Vector3(x, y, -10);
     }
-    [ContextMenu(nameof(createPuzzle))]
-    private void createPuzzle()
+    Block blockDecider(int number, int x, int y)
     {
-        Block curveblock = this.curveblock;
-        Vector2 start = startPoint;
-        Vector2 end = endPoint;
-        point = start;
-        while (point != end)
-        {
-            if ((int)(point.y - 1) >= 0 && (int)(point.y - 1) < row && mapLogic[(int)point.x, (int)(point.y - 1)] == 0)//&& (int)point.y - 1 < mapLogic.GetLength(1))
-            {
-                point.y -= 1;
-                Debug.Log(point);
-                mapLogic[(int)point.x, (int)(point.y)] = 1;
-                mapInterface[(int)point.x, (int)(point.y)].GetComponent<SpriteRenderer>().color = color;
-                mapInterface[(int)point.x, (int)(point.y)].name = "1";
-            }
-            else if (mapLogic[(int)point.x, (int)(point.y + 1)] == 0 && (int)(point.y + 1) >= 0 && (int)(point.y + 1) < row)// && (int)point.y + 1 < mapLogic.GetLength(1))
-            {
-                point.y += 1;
-                Debug.Log(point);
-                mapLogic[(int)point.x, (int)(point.y)] = 1;
-                mapInterface[(int)point.x, (int)(point.y)].GetComponent<SpriteRenderer>().color = color;
-                mapInterface[(int)point.x, (int)(point.y)].name = "1";
-
-            }
-            else if (mapLogic[(int)point.x - 1, (int)(point.y)] == 0 && (int)(point.x - 1) >= 0 && (int)(point.x - 1) < row)//&& (int)point.x - 1 < mapLogic.GetLength(2))
-            {
-                point.x -= 1;
-                Debug.Log(point);
-                mapLogic[(int)point.x, (int)(point.y)] = 1;
-                mapInterface[(int)point.x, (int)(point.y)].GetComponent<SpriteRenderer>().color = color;
-                mapInterface[(int)point.x, (int)(point.y)].name = "1";
-
-
-            }
-            else if (mapLogic[(int)point.x + 1, (int)(point.y)] == 0 && (int)(point.x + 1) >= 0 && (int)(point.x + 1) < row)// && point.x + 1 < mapLogic.GetLength(row))
-            {
-                point.x += 1;
-                Debug.Log(point);
-                mapLogic[(int)point.x, (int)(point.y)] = 1;
-                mapInterface[(int)point.x, (int)(point.y)].GetComponent<SpriteRenderer>().color = color;
-                mapInterface[(int)point.x, (int)(point.y)].name = "1";
-
-            }
-        }
-
+        Block block = Instantiate(blocks[number], new Vector2(x, y), Quaternion.identity);
+        block.name = x + "," + y + " : " + number;
+        return block;
     }
     // Creates a path for puzzle
     void movePointer()
     {
+        solutionMap.Add(startPoint);
         Vector2 pointer = startPoint;
         int x = (int)pointer.x;
         int y = (int)pointer.y;
-        List<Vector2> dir = new List<Vector2>();
-        int counter = 0;
+        List<Vector2> dir = null;
+        if (dir != null) { dir.Clear(); } else { dir = new List<Vector2>(); }
         mapLogic[(int)startPoint.x, (int)startPoint.y] = 1;
         while (pointer != endPoint)
         {
@@ -178,7 +198,7 @@ public class Map : MonoBehaviour
             int count = dir.Count;
             if (count == 0)
             {
-                remakeMapLogic();
+                remakeMapPointer();
                 return;
             }
             int v = UnityEngine.Random.Range(0, count);
@@ -187,16 +207,78 @@ public class Map : MonoBehaviour
             x = (int)pointer.x;
             y = (int)pointer.y;
             mapLogic[x, y] = 1;
-            // Debug.Log(pointer + ":" + mapLogic[x, y]);
+            //Debug.Log(pointer);
             dir.Clear();
-            counter++;
-            // if (counter >= 7)
-            //     break;
+            solutionMap.Add(pointer);
         }
     }
     //Returns true if value is lower than mapLogic array dimension length.
     bool isInMap(int val, int dim)
     {
         return val < mapLogic.GetLength(dim) && val >= 0;
+    }
+    void createBlocks()
+    {
+        Vector2 currentPos;
+        Vector2 prePos;
+        Vector2 nextPos;
+
+        for (var i = 0; i < solutionMap.Count; i++)
+        {
+            currentPos = solutionMap[i];
+            prePos = i != 0 ? solutionMap[i - 1] : startPointMap;
+            nextPos = i != solutionMap.Count - 1 ? solutionMap[i + 1] : endPointMap;
+            var dir1 = prePos - currentPos; // arrival direction
+            var dir2 = nextPos - currentPos; // target direction
+
+            //Debug.Log("dir1 :" + dir1 + "   dir2 :" + dir2);
+            while (true)
+            {
+                if (dir1 == Vector2.up)
+                {
+                    if (dir2 == Vector2.right)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 3;
+                        break;
+                    }
+                    if (dir2 == Vector2.left)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 4;
+                        break;
+                    }
+                    if (dir2 == Vector2.down)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 1;
+                        break;
+
+                    }
+                }
+                else if (dir1 == Vector2.down)
+                {
+                    if (dir2 == Vector2.right)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 6;
+                        break;
+                    }
+                    if (dir2 == Vector2.left)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 5;
+                        break;
+                    }
+                }
+                else if (dir1 == Vector2.right)
+                {
+                    if (dir2 == Vector2.left)
+                    {
+                        mapLogic[(int)currentPos.x, (int)currentPos.y] = 2;
+                        break;
+                    }
+                }
+
+                var temp = dir1;
+                dir1 = dir2;
+                dir2 = temp;
+            }
+        }
     }
 }
