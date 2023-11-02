@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.UIElements;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField] private int row = 3, column = 3;
+    [SerializeField] private int column = 3, row = 3;
     int[,] mapLogic;
     [SerializeField] private Block[] blocks;
     private Vector2 startPoint;
@@ -23,7 +25,7 @@ public class Map : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
-            methodsStart();
+            initializeMethods();
         if (Input.GetKeyDown(KeyCode.W))
         {
             Vector2 v1 = new Vector2(1, 1);
@@ -45,13 +47,14 @@ public class Map : MonoBehaviour
         }
 
     }
-    [ContextMenu(nameof(methodsStart))]
-    void methodsStart()
+    [ContextMenu(nameof(initializeMethods))]
+    void initializeMethods()
     {
         solutionMap.Clear();
         createMapLogic();
         movePointer();
         createBlocks();
+        shuffleMap();
         createMap();
         cameraPosition();
     }
@@ -61,9 +64,9 @@ public class Map : MonoBehaviour
         var parent = GameObject.Find("Blocks");
         if (parent != null) Destroy(parent);
         parent = new GameObject("Blocks");
-        for (var i = 0; i < row; i++)
+        for (var i = 0; i < column; i++)
         {
-            for (var j = 0; j < column; j++)
+            for (var j = 0; j < row; j++)
             {
                 if (mapLogic[i, j] == 10) continue;
                 Block block = blockDecider(mapLogic[i, j], i, j);
@@ -86,18 +89,19 @@ public class Map : MonoBehaviour
     {
         isStartExist = false;
         isEndExist = false;
-        mapLogic = new int[row, column];
+        mapLogic = new int[column, row];
         mapLogicClear();
         while (!isStartExist)
         {
-            int i = UnityEngine.Random.value < .5f ? 0 : row - 1;
-            int j = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            int i = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            int j = UnityEngine.Random.value < .5f ? 0 : row - 1;
+            if (i == 0 && j == 0) continue;
             startPoint = new Vector2(i, j);
-            if (j == (column - 1) && (i != 0 || i == (row - 1)))
+            if (j == (row - 1) && (i != 0 || i == (column - 1)))
             {
                 startPointMap = new Vector2(i, j + 1);
             }
-            else if (j == 0 && (i != 0 || i == (row - 1)))
+            else if (j == 0 && (i != 0 || i == (column - 1)))
             {
                 startPointMap = new Vector2(i, j - 1);
             }
@@ -105,24 +109,25 @@ public class Map : MonoBehaviour
             {
                 startPointMap = new Vector2(i - 1, j);
             }
-            else if (i == (row - 1))
+            else if (i == (column - 1))
             {
                 startPointMap = new Vector2(i + 1, j);
             }
-            // Debug.Log("Start Point : " + startPoint);
+            //Debug.Log("Start Point : " + startPoint);
             // Debug.Log("Start Point Map : " + startPointMap);
             isStartExist = true;
         }
         while (!isEndExist || endPoint == startPoint)
         {
-            int i = UnityEngine.Random.value < .5f ? 0 : row - 1;
-            int j = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            int i = UnityEngine.Random.value < .5f ? 0 : column - 1;
+            int j = UnityEngine.Random.value < .5f ? 0 : row - 1;
+            if (i == 0 && j == 0) continue;
             endPoint = new Vector2(i, j);
-            if (j == (column - 1) && (i != 0 || i == (row - 1)))
+            if (j == (row - 1) && (i != 0 || i == (column - 1)))
             {
                 endPointMap = new Vector2(i, j + 1);
             }
-            else if (j == 0 && (i != 0 || i == (row - 1)))
+            else if (j == 0 && (i != 0 || i == (column - 1)))
             {
                 endPointMap = new Vector2(i, j - 1);
             }
@@ -130,11 +135,11 @@ public class Map : MonoBehaviour
             {
                 endPointMap = new Vector2(i - 1, j);
             }
-            else if (i == (row - 1))
+            else if (i == (column - 1))
             {
                 endPointMap = new Vector2(i + 1, j);
             }
-            // Debug.Log("End Point : " + endPoint);
+            //Debug.Log("End Point : " + endPoint);
             // Debug.Log("End Point Map : " + endPointMap);
             isEndExist = true;
         }
@@ -142,13 +147,13 @@ public class Map : MonoBehaviour
 
     private void mapLogicClear()
     {
-        int randx = UnityEngine.Random.Range(0, row);
-        int randy = UnityEngine.Random.Range(0, column);
-        for (var i = 0; i < row; i++)
+        int randx = UnityEngine.Random.Range(0, column);
+        int randy = UnityEngine.Random.Range(0, row);
+        for (var i = 0; i < column; i++)
         {
-            for (var j = 0; j < column; j++)
+            for (var j = 0; j < row; j++)
             {
-                mapLogic[i, j] = (i == randx && j == randy) ? 10 : 0;
+                mapLogic[i, j] = (i == 0 && j == 0) ? 10 : 0;
             }
         }
     }
@@ -156,8 +161,8 @@ public class Map : MonoBehaviour
     private void cameraPosition()
     {
 
-        float x = (row - 1) / 2.0f;
-        float y = (column - 1) / 2.0f;
+        float x = (column - 1) / 2.0f;
+        float y = (row - 1) / 2.0f;
         Camera.main.transform.position = new Vector3(x, y, -10);
     }
     Block blockDecider(int number, int x, int y)
@@ -278,6 +283,33 @@ public class Map : MonoBehaviour
                 var temp = dir1;
                 dir1 = dir2;
                 dir2 = temp;
+            }
+        }
+    }
+    void shuffleMap()
+    {
+        List<int> tempArr = null;
+        if (tempArr != null) { tempArr.Clear(); } else { tempArr = new List<int>(); }
+        foreach (var item in mapLogic)
+        {
+            tempArr.Add(item);
+        }
+        int count = tempArr.Count;
+
+        for (var i = 0; i < count; i++)
+        {
+            int tmp = tempArr[i];
+            int r = UnityEngine.Random.Range(i, count);
+            tempArr[i] = tempArr[r];
+            tempArr[r] = tmp;
+        }
+        for (int i = 0; i < column; i++)
+        {
+            for (int j = 0; j < row; j++)
+            {
+                mapLogic[i, j] = tempArr[count - 1];
+                //Debug.Log("x, y, n, c: " + i + " " + j + " " + tempArr[count - 1] + " " + count);
+                count--;
             }
         }
     }
