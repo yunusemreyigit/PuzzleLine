@@ -1,16 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro.EditorUtilities;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using UnityEngine.UIElements;
-
+/*
+0 - Empty Bloc
+7 - Start End Block
+8 - Empty Area
+*/
 public class Map : MonoBehaviour
 {
-    [SerializeField] private int column = 3, row = 3;
+    public int column = 3, row = 3;
     int[,] mapLogic;
     [SerializeField] private Block[] blocks;
     private Vector2 startPoint;
@@ -18,9 +17,15 @@ public class Map : MonoBehaviour
     private Vector2 startPointMap, endPointMap;
     bool isStartExist, isEndExist;
     List<Vector2> solutionMap;
+    private List<Block> blockList;
+    private GameObject emptyObject;
     private void Start()
     {
         solutionMap = new List<Vector2>();
+        blockList = new List<Block>();
+        initializeMethods();
+        Instantiate(blocks[7], startPointMap, Quaternion.identity);
+        Instantiate(blocks[7], endPointMap, Quaternion.identity);
     }
     private void Update()
     {
@@ -47,6 +52,10 @@ public class Map : MonoBehaviour
         }
 
     }
+    public Transform getEmptyAreaTransform()
+    {
+        return emptyObject.transform;
+    }
     [ContextMenu(nameof(initializeMethods))]
     void initializeMethods()
     {
@@ -55,8 +64,32 @@ public class Map : MonoBehaviour
         movePointer();
         createBlocks();
         shuffleMap();
-        createMap();
+        createMap();    //interface
         cameraPosition();
+    }
+    public void isFinished()
+    {
+        foreach (var item in blockList)
+        {
+            if (item.name != "0")
+            {
+                if (item.blockCounter != 2) return;
+            }
+        }
+        Debug.Log("Game Over Successfully !");
+    }
+    public Transform moveBlock(Vector2 position)
+    {
+        Block block = null;
+        // TODO: sınırlar ile kontrol edilebilir
+        foreach (var item in blockList)
+        {
+            if ((Vector2)item.transform.position == position)
+            {
+                block = item;
+            }
+        }
+        return block.transform;
     }
     // Creates map interfaces
     private void createMap()
@@ -68,8 +101,11 @@ public class Map : MonoBehaviour
         {
             for (var j = 0; j < row; j++)
             {
-                if (mapLogic[i, j] == 10) continue;
                 Block block = blockDecider(mapLogic[i, j], i, j);
+                if (mapLogic[i, j] == 8)
+                {
+                    emptyObject = block.gameObject;
+                }
                 block.transform.SetParent(parent.transform);
             }
         }
@@ -80,6 +116,7 @@ public class Map : MonoBehaviour
     private void remakeMapPointer()
     {
         solutionMap.Clear();
+        blockList.Clear();
         mapLogicClear();
         movePointer();
     }
@@ -153,7 +190,7 @@ public class Map : MonoBehaviour
         {
             for (var j = 0; j < row; j++)
             {
-                mapLogic[i, j] = (i == 0 && j == 0) ? 10 : 0;
+                mapLogic[i, j] = (i == 0 && j == 0) ? 8 : 0;
             }
         }
     }
@@ -161,14 +198,16 @@ public class Map : MonoBehaviour
     private void cameraPosition()
     {
 
-        float x = (column - 1) / 2.0f;
-        float y = (row - 1) / 2.0f;
+        float x = column / 2.0f;
+        float y = row / 2.0f;
         Camera.main.transform.position = new Vector3(x, y, -10);
     }
     Block blockDecider(int number, int x, int y)
     {
         Block block = Instantiate(blocks[number], new Vector2(x, y), Quaternion.identity);
-        block.name = x + "," + y + " : " + number;
+        block.name = number.ToString();
+        if (number != 8)
+            blockList.Add(block);
         return block;
     }
     // Creates a path for puzzle

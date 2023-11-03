@@ -106,6 +106,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -117,7 +130,7 @@ TextureImporter:
         y: 16
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -138,14 +151,14 @@ TextureImporter:
         y: 16
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 045d5298a7d664a4abecc57891cb26ab
+      spriteID: b68083ea41dbfd54fa4e01779f0f1821
       internalID: 1446544305
       vertices: []
       indices: 
@@ -159,14 +172,14 @@ TextureImporter:
         y: 16
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 733fedd442bbd1244bb3f04baec2fe65
+      spriteID: 3eff6b65cfc800b48b011f3d7886c4b0
       internalID: 988990145
       vertices: []
       indices: 
@@ -180,14 +193,14 @@ TextureImporter:
         y: 16
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e4dc73c365a56f648925c69974727f40
+      spriteID: 709e87fa9620aee4a938db594f7afe0d
       internalID: 846616863
       vertices: []
       indices: 
@@ -201,14 +214,14 @@ TextureImporter:
         y: 0
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7741ad4ea38b8b242bd81af1e55d2301
+      spriteID: f498aab575f7f694985edd64ec46fe49
       internalID: -1295530659
       vertices: []
       indices: 
@@ -222,14 +235,14 @@ TextureImporter:
         y: 0
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2d9e63fc001dcca4aa58bb6dcc04a2d0
+      spriteID: 894003e262d3e3647912351f972f2dd0
       internalID: -361036892
       vertices: []
       indices: 
@@ -243,15 +256,36 @@ TextureImporter:
         y: 0
         width: 16
         height: 16
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8626421ac3ac46b4ab4ed48a88c595fd
+      spriteID: 464d64099fb1c3d48b41ce4264c272b6
       internalID: 320858446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_7
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 291192e983d8d66458bf06a62fbc9cd9
+      internalID: 221450897
       vertices: []
       indices: 
       edges: []
@@ -274,7 +308,7 @@ TextureImporter:
       blocks_4: -1295530659
       blocks_5: -361036892
       blocks_6: 320858446
-      blocks_7: 611262109
+      blocks_7: 221450897
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

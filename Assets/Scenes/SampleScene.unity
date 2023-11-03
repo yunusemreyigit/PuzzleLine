@@ -255,6 +255,17 @@ MonoBehaviour:
   - {fileID: 4744745837546471526, guid: 1b40eb22da7f6cb40b2e28d4a6fffb41, type: 3}
   - {fileID: 4494431055299339014, guid: 87d0257f5977a4141b5b0a41d0c87958, type: 3}
   - {fileID: 7586964676943266240, guid: 29d5c136737a339488245aca851bcdcd, type: 3}
+  - {fileID: 5577983542288681386, guid: 391427cb0899a0546b31ad83dc95e0e2, type: 3}
+  - {fileID: 4523623819938973549, guid: a00c955f2e5d446428e5f36b1a694196, type: 3}
+  blockList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &2036224888
 Transform:
   m_ObjectHideFlags: 0
@@ -282,4 +293,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447357a9e3cb3864ca6fa70b69f68a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0}

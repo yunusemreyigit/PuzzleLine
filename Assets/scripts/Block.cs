@@ -1,14 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Block : MonoBehaviour
 {
-    Vector2[] points;
 
-    private void FixedUpdate()
+    public int blockCounter = 0;
+
+    public int getBlockCounter()
     {
-        //raycast
+        return blockCounter;
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Block"))
+        {
+            blockCounter++;
+        }
 
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Block"))
+        {
+            blockCounter--;
+        }
+
+    }
+
 }
