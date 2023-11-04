@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 /*
@@ -19,13 +18,18 @@ public class Map : MonoBehaviour
     List<Vector2> solutionMap;
     private List<Block> blockList;
     private GameObject emptyObject;
+    public Block startBlock, endBlock;
+    private void Awake()
+    {
+
+    }
     private void Start()
     {
+        startBlock = Instantiate(blocks[7]);
+        endBlock = Instantiate(blocks[7]);
         solutionMap = new List<Vector2>();
         blockList = new List<Block>();
         initializeMethods();
-        Instantiate(blocks[7], startPointMap, Quaternion.identity);
-        Instantiate(blocks[7], endPointMap, Quaternion.identity);
     }
     private void Update()
     {
@@ -52,6 +56,11 @@ public class Map : MonoBehaviour
         }
 
     }
+    public void setSize(int r, int c)
+    {
+        row = r;
+        column = c;
+    }
     public Transform getEmptyAreaTransform()
     {
         return emptyObject.transform;
@@ -66,6 +75,21 @@ public class Map : MonoBehaviour
         shuffleMap();
         createMap();    //interface
         cameraPosition();
+        startBlock.transform.position = startPointMap;
+        endBlock.transform.position = endPointMap;
+    }
+    public void startGame()
+    {
+        blockList.Clear();
+        initializeMethods();
+    }
+    public void restartScene()
+    {
+        shuffleMap();
+        createMap();    //interface
+        cameraPosition();
+        startBlock.transform.position = startPointMap;
+        endBlock.transform.position = endPointMap;
     }
     public void isFinished()
     {
@@ -76,6 +100,7 @@ public class Map : MonoBehaviour
                 if (item.blockCounter != 2) return;
             }
         }
+        startGame();
         Debug.Log("Game Over Successfully !");
     }
     public Transform moveBlock(Vector2 position)
