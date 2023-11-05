@@ -18,11 +18,7 @@ public class Map : MonoBehaviour
     List<Vector2> solutionMap;
     private List<Block> blockList;
     private GameObject emptyObject;
-    public Block startBlock, endBlock;
-    private void Awake()
-    {
-
-    }
+    private Block startBlock, endBlock;
     private void Start()
     {
         startBlock = Instantiate(blocks[7]);
@@ -87,6 +83,7 @@ public class Map : MonoBehaviour
     {
         shuffleMap();
         createMap();    //interface
+        blockList.RemoveRange(0, blockList.Count);
         cameraPosition();
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
@@ -100,6 +97,8 @@ public class Map : MonoBehaviour
                 if (item.blockCounter != 2) return;
             }
         }
+        GameManager.Instance.addCoin(solutionMap.Count);
+        // Time.timeScale = 0;
         startGame();
         Debug.Log("Game Over Successfully !");
     }

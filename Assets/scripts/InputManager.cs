@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Net.Mail;
-using Unity.Mathematics;
+using TMPro;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -12,8 +10,9 @@ public class InputManager : MonoBehaviour
     private Transform block;
     private Transform emptyBlock;
     private Map map;
-
+    private Vector2 fingerPos;
     public static InputManager Instance;
+
     private void Awake()
     {
         Instance = this;
@@ -37,14 +36,25 @@ public class InputManager : MonoBehaviour
                 block = map.moveBlock(startWorldPos) != null ? map.moveBlock(startWorldPos) : null;
                 if (block == null) return;
             }
+
+            fingerPos = touch.position;
+            var worlPos = Camera.main.ScreenToWorldPoint(fingerPos);
+            worlPos.x = Mathf.FloorToInt(worlPos.x);
+            worlPos.y = Mathf.FloorToInt(worlPos.y);
+            if ((Vector2)worlPos == (Vector2)emptyBlock.position)
+            {
+                endPosition = fingerPos;
+            }
+
+
             if (touch.phase == TouchPhase.Ended)
             {
-                endPosition = touch.position;
-                var worlPos = Camera.main.ScreenToWorldPoint(endPosition);
-                worlPos.x = Mathf.FloorToInt(worlPos.x);
-                worlPos.y = Mathf.FloorToInt(worlPos.y);
-                if ((Vector2)worlPos != (Vector2)emptyBlock.position) return;
-
+                //endPosition = touch.position;
+                // var worlPos = Camera.main.ScreenToWorldPoint(endPosition);
+                // worlPos.x = Mathf.FloorToInt(worlPos.x);
+                // worlPos.y = Mathf.FloorToInt(worlPos.y);
+                //if ((Vector2)worlPos != (Vector2)emptyBlock.position) return;
+                if (block == null) return;
                 var temp = block.position;
                 float x = endPosition.x - startPosition.x;
                 float y = endPosition.y - startPosition.y;
@@ -66,6 +76,8 @@ public class InputManager : MonoBehaviour
 
     private void moveControl(Vector2 vector2)
     {
-        block.position = (Vector2)(emptyBlock.position - block.position) == vector2 ? (Vector2)block.position + vector2 : block.position;
+
+        block.position = (Vector2)(emptyBlock.position - block.position) == vector2 ?
+         (Vector2)block.position + vector2 : block.position;
     }
 }
