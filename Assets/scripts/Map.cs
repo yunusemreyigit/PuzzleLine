@@ -81,9 +81,10 @@ public class Map : MonoBehaviour
     }
     public void restartScene()
     {
+        findParentDestroy();
         shuffleMap();
+        blockList.Clear();
         createMap();    //interface
-        blockList.RemoveRange(0, blockList.Count);
         cameraPosition();
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
@@ -98,7 +99,6 @@ public class Map : MonoBehaviour
             }
         }
         GameManager.Instance.addCoin(solutionMap.Count);
-        // Time.timeScale = 0;
         startGame();
         Debug.Log("Game Over Successfully !");
     }
@@ -118,9 +118,8 @@ public class Map : MonoBehaviour
     // Creates map interfaces
     private void createMap()
     {
-        var parent = GameObject.Find("Blocks");
-        if (parent != null) Destroy(parent);
-        parent = new GameObject("Blocks");
+        findParentDestroy();
+        GameObject parent = new GameObject("Blocks");
         for (var i = 0; i < column; i++)
         {
             for (var j = 0; j < row; j++)
@@ -133,6 +132,12 @@ public class Map : MonoBehaviour
                 block.transform.SetParent(parent.transform);
             }
         }
+    }
+
+    private void findParentDestroy()
+    {
+        var parent = GameObject.Find("Blocks");
+        if (parent != null) Destroy(parent);
     }
 
     // Deletes maplogic and creates new maplogic
