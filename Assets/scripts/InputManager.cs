@@ -4,8 +4,8 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     private Touch touch;
+    private Touch touch1;
     private Vector2 startPosition, startWorldPos;
-    private Vector2 endWorldPos;
     private Transform block;
     private Transform emptyBlock;
     private Map map;
@@ -24,6 +24,44 @@ public class InputManager : MonoBehaviour
     }
     public void Update()
     {
+        if (Input.touchCount == 2)
+        {
+            touch = Input.GetTouch(0);
+            touch1 = Input.GetTouch(1);
+
+            var pos1 = touch.position;
+            var pos2 = touch1.position;
+
+            Debug.Log(pos1);
+            Debug.Log(pos2);
+
+            Vector2 startPosition = new();
+            float distance = 0;
+            float currentDistance = Vector2.Distance(pixelPosToWorldPos(pos1), pixelPosToWorldPos(pos2));
+            if (touch.phase == TouchPhase.Began && touch1.phase == TouchPhase.Began)
+            {
+                distance = currentDistance;
+                startPosition = pixelPosToWorldPos(pos1);
+            }
+            if (touch.phase == TouchPhase.Moved && touch1.phase == TouchPhase.Moved)
+            {
+                if (currentDistance > distance)
+                {
+                    Camera.main.orthographicSize += 10 * Time.deltaTime;
+                    return;
+                }
+                if (currentDistance < distance)
+                {
+                    Camera.main.orthographicSize -= 1 * Time.deltaTime;
+                    return;
+                }
+
+                Vector2 currentPos = pixelPosToWorldPos(pos1);
+                var posCam = Camera.main.transform.position;
+                Camera.main.transform.position = new Vector3(posCam.x + (currentPos.x - startPosition.x) * Time.deltaTime,
+                posCam.y + (currentPos.y - startPosition.y) * Time.deltaTime, -10);
+            }
+        }
         if (Input.touchCount > 0 && isTouched == false)
         {
             touch = Input.GetTouch(0);
@@ -90,6 +128,7 @@ public class InputManager : MonoBehaviour
         {
             timer = 0;
             isTouched = false;
+            block = null;
         }
 
     }
