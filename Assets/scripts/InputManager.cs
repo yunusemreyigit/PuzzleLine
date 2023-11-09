@@ -55,6 +55,7 @@ public class InputManager : MonoBehaviour
         if (timer >= 1)
         {
             block.position = emptyBlock.position;
+            blockTemp = block.position;
             timer = 0;
             isTouched = false;
             emptyBlock.position = startWorldPos;
@@ -63,6 +64,7 @@ public class InputManager : MonoBehaviour
 
         if (isTouched && Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
         {
+            SoundManager.Instance.playSfx("Block");
             timer += Time.deltaTime * animSpeed;
             block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
         }
