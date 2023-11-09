@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
     private Touch touch;
     private Vector2 startPosition, startWorldPos;
+    private Vector2 endWorldPos;
     private Transform block;
     private Transform emptyBlock;
     private Map map;
@@ -12,10 +14,9 @@ public class InputManager : MonoBehaviour
 
     Vector2 blockTemp;
     private Vector2 emptyBlockTemp;
-    public float timer = 0;
+    private float timer = 0;
     public float animSpeed = 1;
     private bool isTouched = false;
-
     private void Awake()
     {
         Instance = this;
@@ -45,20 +46,35 @@ public class InputManager : MonoBehaviour
                 Vector2 worlPos = pixelPosToWorldPos(fingerPos);
                 if (worlPos == (Vector2)emptyBlock.position)
                 {
-                    if (block != null)
-                        isTouched = true;
-
+                    Touched();
+                }
+            }
+            if (touch.phase == TouchPhase.Ended)
+            {
+                if (block == null) return;
+                var endpos = touch.position;
+                float x = endpos.x - startPosition.x;
+                float y = endpos.y - startPosition.y;
+                if (Mathf.Abs(x) > Mathf.Abs(y))
+                {
+                    if (x > 0) changePosEmptyAreaWithoutTouch(Vector2.left);
+                    if (x < 0) changePosEmptyAreaWithoutTouch(Vector2.right);
+                }
+                else
+                {
+                    if (y < 0) changePosEmptyAreaWithoutTouch(Vector2.up);
+                    if (y > 0) changePosEmptyAreaWithoutTouch(Vector2.down);
                 }
             }
 
         }
         if (timer >= 1)
         {
-            block.position = emptyBlock.position;
+            block.position = emptyBlockTemp;
+            emptyBlock.position = startWorldPos;
             blockTemp = block.position;
             timer = 0;
             isTouched = false;
-            emptyBlock.position = startWorldPos;
             block = null;
         }
 
@@ -67,6 +83,7 @@ public class InputManager : MonoBehaviour
             SoundManager.Instance.playSfx("Block");
             timer += Time.deltaTime * animSpeed;
             block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
+            emptyBlock.position = Vector2.Lerp(emptyBlockTemp, blockTemp, animTime(timer));
         }
 
         if (map.isFinished())
@@ -77,12 +94,26 @@ public class InputManager : MonoBehaviour
 
     }
 
+    private void changePosEmptyAreaWithoutTouch(Vector2 vector2)
+    {
+        if ((Vector2)block.position - (Vector2)emptyBlock.position == vector2)
+        {
+            Touched();
+        }
+    }
+
+    private void Touched()
+    {
+        if (block != null)
+            isTouched = true;
+    }
+
     private Vector2 pixelPosToWorldPos(Vector2 pixelPos)
     {
-        var worlPos = Camera.main.ScreenToWorldPoint(pixelPos);
-        worlPos.x = Mathf.FloorToInt(worlPos.x);
-        worlPos.y = Mathf.FloorToInt(worlPos.y);
-        return worlPos;
+        var worldPos = Camera.main.ScreenToWorldPoint(pixelPos);
+        worldPos.x = Mathf.FloorToInt(worldPos.x);
+        worldPos.y = Mathf.FloorToInt(worldPos.y);
+        return worldPos;
     }
 
     private bool isTouchedOutsideBlock(Vector2 start, Vector2 emptyArea)
