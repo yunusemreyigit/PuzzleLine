@@ -89,18 +89,19 @@ public class Map : MonoBehaviour
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
     }
-    public void isFinished()
+    public bool isFinished()
     {
         foreach (var item in blockList)
         {
             if (item.name != "0")
             {
-                if (item.blockCounter != 2) return;
+                if (item.blockCounter != 2) return false;
             }
         }
         GameManager.Instance.addCoin(solutionMap.Count);
         startGame();
         Debug.Log("Game Over Successfully !");
+        return true;
     }
     public Transform moveBlock(Vector2 position)
     {

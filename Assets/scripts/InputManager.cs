@@ -1,17 +1,20 @@
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
     private Touch touch;
     private Vector2 startPosition, startWorldPos;
-    private Vector2 endPosition;
     private Transform block;
     private Transform emptyBlock;
     private Map map;
     private Vector2 fingerPos;
     public static InputManager Instance;
+
+    Vector2 blockTemp;
+    private Vector2 emptyBlockTemp;
+    public float timer = 0;
+    public float animSpeed = 1;
+    private bool isTouched = false;
 
     private void Awake()
     {
@@ -20,64 +23,79 @@ public class InputManager : MonoBehaviour
     }
     public void Update()
     {
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && isTouched == false)
         {
             touch = Input.GetTouch(0);
             emptyBlock = map.getEmptyAreaTransform();
+            emptyBlockTemp = emptyBlock.position;
+
             if (touch.phase == TouchPhase.Began)
             {
                 startPosition = touch.position;
-                startWorldPos = Camera.main.ScreenToWorldPoint(startPosition);
-                startWorldPos.x = Mathf.FloorToInt(startWorldPos.x);
-                startWorldPos.y = Mathf.FloorToInt(startWorldPos.y);
-                if (startWorldPos == (Vector2)emptyBlock.position) return;
-                if (startWorldPos.x > map.column - 1 || startWorldPos.x < 0 ||
-                 startWorldPos.y > map.row - 1 || startWorldPos.y < 0) return;
-                block = map.moveBlock(startWorldPos) != null ? map.moveBlock(startWorldPos) : null;
-                if (block == null) return;
-            }
+                startWorldPos = pixelPosToWorldPos(startPosition);
+                if (isTouchedOutsideBlock(startWorldPos, emptyBlock.position)) return;
+                // emptyBlockTemp = emptyBlock.position;
+                block = map.moveBlock(startWorldPos);
+                blockTemp = startWorldPos;
 
-            fingerPos = touch.position;
-            var worlPos = Camera.main.ScreenToWorldPoint(fingerPos);
-            worlPos.x = Mathf.FloorToInt(worlPos.x);
-            worlPos.y = Mathf.FloorToInt(worlPos.y);
-            if ((Vector2)worlPos == (Vector2)emptyBlock.position)
+            }
+            if (touch.phase == TouchPhase.Moved)
             {
-                endPosition = fingerPos;
+                fingerPos = touch.position;
+                Vector2 worlPos = pixelPosToWorldPos(fingerPos);
+                if (worlPos == (Vector2)emptyBlock.position)
+                {
+                    if (block != null)
+                        isTouched = true;
+
+                }
             }
 
-
-            if (touch.phase == TouchPhase.Ended)
-            {
-                //endPosition = touch.position;
-                // var worlPos = Camera.main.ScreenToWorldPoint(endPosition);
-                // worlPos.x = Mathf.FloorToInt(worlPos.x);
-                // worlPos.y = Mathf.FloorToInt(worlPos.y);
-                //if ((Vector2)worlPos != (Vector2)emptyBlock.position) return;
-                if (block == null) return;
-                var temp = block.position;
-                float x = endPosition.x - startPosition.x;
-                float y = endPosition.y - startPosition.y;
-                if (Mathf.Abs(x) > Mathf.Abs(y))
-                {
-                    if (x < 0) moveControl(Vector2.left);
-                    if (x > 0) moveControl(Vector2.right);
-                }
-                else
-                {
-                    if (y > 0) moveControl(Vector2.up);
-                    if (y < 0) moveControl(Vector2.down);
-                }
-                if (block.position != temp) emptyBlock.position = startWorldPos;
-            }
         }
-        map.isFinished();
+        if (timer >= 1)
+        {
+            block.position = emptyBlock.position;
+            timer = 0;
+            isTouched = false;
+            emptyBlock.position = startWorldPos;
+            block = null;
+        }
+
+        if (isTouched && Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
+        {
+            timer += Time.deltaTime * animSpeed;
+            block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
+        }
+
+        if (map.isFinished())
+        {
+            timer = 0;
+            isTouched = false;
+        }
+
     }
 
-    private void moveControl(Vector2 vector2)
+    private Vector2 pixelPosToWorldPos(Vector2 pixelPos)
     {
-
-        block.position = (Vector2)(emptyBlock.position - block.position) == vector2 ?
-         (Vector2)block.position + vector2 : block.position;
+        var worlPos = Camera.main.ScreenToWorldPoint(pixelPos);
+        worlPos.x = Mathf.FloorToInt(worlPos.x);
+        worlPos.y = Mathf.FloorToInt(worlPos.y);
+        return worlPos;
     }
+
+    private bool isTouchedOutsideBlock(Vector2 start, Vector2 emptyArea)
+    {
+        return
+        start == emptyArea ||
+        startWorldPos.x > map.column - 1 ||
+        startWorldPos.x < 0 ||
+        startWorldPos.y > map.row - 1 ||
+        startWorldPos.y < 0;
+    }
+
+    private float animTime(float x)
+    {
+        return 1 - Mathf.Pow(1 - x, 4);
+    }
+
 }
