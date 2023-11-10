@@ -17,6 +17,10 @@ public class InputManager : MonoBehaviour
     private float timer = 0;
     public float animSpeed = 1;
     private bool isTouched = false;
+
+    private float distance = 0;
+    Vector2 moveStartPosition;
+
     private void Awake()
     {
         Instance = this;
@@ -32,34 +36,44 @@ public class InputManager : MonoBehaviour
             var pos1 = touch.position;
             var pos2 = touch1.position;
 
-            Debug.Log(pos1);
-            Debug.Log(pos2);
-
-            Vector2 startPosition = new();
-            float distance = 0;
-            float currentDistance = Vector2.Distance(pixelPosToWorldPos(pos1), pixelPosToWorldPos(pos2));
+            float currentDistance = Vector2.Distance(pos1, pos2);
             if (touch.phase == TouchPhase.Began && touch1.phase == TouchPhase.Began)
             {
                 distance = currentDistance;
-                startPosition = pixelPosToWorldPos(pos1);
+                moveStartPosition = pos1;
             }
             if (touch.phase == TouchPhase.Moved && touch1.phase == TouchPhase.Moved)
             {
-                if (currentDistance > distance)
+                if (Mathf.Abs(currentDistance - distance) >= 200)
                 {
-                    Camera.main.orthographicSize += 10 * Time.deltaTime;
-                    return;
-                }
-                if (currentDistance < distance)
-                {
-                    Camera.main.orthographicSize -= 1 * Time.deltaTime;
-                    return;
-                }
 
-                Vector2 currentPos = pixelPosToWorldPos(pos1);
-                var posCam = Camera.main.transform.position;
-                Camera.main.transform.position = new Vector3(posCam.x + (currentPos.x - startPosition.x) * Time.deltaTime,
-                posCam.y + (currentPos.y - startPosition.y) * Time.deltaTime, -10);
+                    if (currentDistance < distance && Camera.main.orthographicSize <= map.column + 2)
+                    {
+                        Camera.main.orthographicSize += 6 * Time.deltaTime;
+                    }
+                    else if (currentDistance > distance && Camera.main.orthographicSize > 5)
+                    {
+                        Camera.main.orthographicSize -= 6 * Time.deltaTime;
+                    }
+                }
+                else
+                {
+                    if (map.column <= 4 || map.row <= 4) return;
+                    var posCam = Camera.main.transform.position;
+                    Vector2 diff = (moveStartPosition - pos1).normalized;
+                    var xMax = map.column - 1.5f > 1 ? map.column - 1.5f : 1;
+                    posCam.x = Mathf.Clamp(posCam.x, 1, xMax);
+                    var yMax = map.row - 3 > 3 ? map.row - 3 : 3;
+                    posCam.y = Mathf.Clamp(posCam.y, 3, yMax);
+                    Camera.main.transform.position = new Vector3(posCam.x + diff.x * Time.deltaTime * 5,
+                    posCam.y + diff.y * Time.deltaTime * 5, -10);
+                }
+            }
+            if (touch.phase == TouchPhase.Stationary && touch1.phase == TouchPhase.Stationary)
+            {
+                moveStartPosition = pos1;
+                distance = currentDistance;
+
             }
         }
         if (Input.touchCount > 0 && isTouched == false)
@@ -114,6 +128,11 @@ public class InputManager : MonoBehaviour
             timer = 0;
             isTouched = false;
             block = null;
+        }
+        if (block == null)
+        {
+            isTouched = false;
+            return;
         }
 
         if (isTouched && Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
