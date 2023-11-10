@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +12,15 @@ public class UIManager : MonoBehaviour
     public RectTransform xpBar;
     public Text currLevel;
     public Text nextLevel;
+    public GameObject instractionPanel;
+    public GameObject privateGame;
+
+
     float timer;
+
+
+    public Text row;
+    public Text column;
     private void Awake()
     {
         map = GetComponent<Map>();
@@ -24,8 +32,6 @@ public class UIManager : MonoBehaviour
         {
             timer = 0;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
-            GameManager.Instance.addXp(50);
 
         int v = GameManager.Instance.getLevel();
         currLevel.text = v.ToString();
@@ -49,14 +55,32 @@ public class UIManager : MonoBehaviour
     {
         map.restartScene();
     }
-    public void get3x3Map()
+    public void getPrivatePanel()
     {
-        map.setSize(3, 3);
+        privateGame.SetActive(true);
+    }
+    public void randomMap()
+    {
+        var x = UnityEngine.Random.Range(3, 7);
+        var y = UnityEngine.Random.Range(3, 7);
+        map.setSize(x, y);
         map.startGame();
     }
-    public void get4x4Map()
+    public void exitInstraction()
     {
-        map.setSize(4, 4);
+        instractionPanel.SetActive(false);
+    }
+    public void startPrivateGame()
+    {
+        int r = short.Parse(row.text);
+        int c = short.Parse(column.text);
+        if (r > 10 || c > 10) return;
+        privateGame.SetActive(false);
+        map.setSize(r, c);
         map.startGame();
+    }
+    public void privateGameExitPanel()
+    {
+        privateGame.SetActive(false);
     }
 }
