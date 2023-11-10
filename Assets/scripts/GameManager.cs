@@ -6,23 +6,51 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-    private int coin = 0;
+    private int level = 0;
+    [SerializeField] private float requiredXp;
+    [SerializeField] private float currentXp;
     public static GameManager Instance;
     private void Awake()
     {
         Instance = this;
 
     }
-    public void addCoin(int coinAmount)
+    private void Start()
     {
-        coin += coinAmount;
+        requiredXp = calculateRequiredXp(level);
     }
-    public int getCoinAmount()
+    private float calculateRequiredXp(int level)
     {
-        return coin;
+        return (level + 1) * 7;
     }
-    void Start()
+    public void addXp(float value)
     {
-        coin = 0;
+        currentXp += value;
     }
+    public void setXp(float xp)
+    {
+        currentXp = xp;
+    }
+    public float getXp()
+    {
+        return currentXp;
+    }
+    public float getRequiredXp()
+    {
+        return requiredXp;
+    }
+    public void addLevel()
+    {
+        if (currentXp >= requiredXp)
+        {
+            level++;
+            currentXp = currentXp - requiredXp;
+            requiredXp = calculateRequiredXp(level);
+        }
+    }
+    public int getLevel()
+    {
+        return level;
+    }
+
 }

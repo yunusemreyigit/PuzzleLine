@@ -98,7 +98,7 @@ public class Map : MonoBehaviour
                 if (item.blockCounter != 2) return false;
             }
         }
-        GameManager.Instance.addCoin(solutionMap.Count);
+        //GameManager.Instance.addCoin(solutionMap.Count);
         startGame();
         Debug.Log("Game Over Successfully !");
         return true;
