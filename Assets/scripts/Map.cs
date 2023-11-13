@@ -6,6 +6,14 @@ using UnityEngine;
 7 - Start End Block
 8 - Empty Area
 */
+public enum Difficulty
+{
+    BABY,
+    INTERMEDIATE,
+    INSANE,
+    CRY,
+    HOLY
+}
 public class Map : MonoBehaviour
 {
     public int column = 3, row = 3;
@@ -88,6 +96,17 @@ public class Map : MonoBehaviour
         cameraPosition();
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
+    }
+    public Difficulty gameDifficulty()
+    {
+        int number = solutionMap.Count;
+        if (number <= 3) return Difficulty.BABY;
+        else if (number > 3 && number <= 7) return Difficulty.INTERMEDIATE;
+        else if (number > 7 && number <= 13) return Difficulty.INSANE;
+        else if (number > 13 && number <= 16) return Difficulty.CRY;
+        else if (number > 16) return Difficulty.HOLY;
+        else return Difficulty.BABY;
+
     }
     public bool isFinished()
     {

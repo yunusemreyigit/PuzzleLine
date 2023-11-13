@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 
+
 public class GameManager : MonoBehaviour
 {
 
     private int level = 0;
     [SerializeField] private float requiredXp;
     [SerializeField] private float currentXp;
+    private float minute = 0, second = 0;
     public static GameManager Instance;
     private void Awake()
     {
@@ -18,6 +20,10 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         requiredXp = calculateRequiredXp(level);
+    }
+    private void Update()
+    {
+        GameTimer();
     }
     private float calculateRequiredXp(int level)
     {
@@ -52,5 +58,19 @@ public class GameManager : MonoBehaviour
     {
         return level;
     }
-
+    public void GameTimer()
+    {
+        second += Time.deltaTime;
+        if (second >= 60)
+        {
+            minute++;
+            second = 0;
+        }
+    }
+    public float getSecond()
+    {
+        return second;
+    }
+    public float getMinute() { return minute; }
+    public void resetTimer() { minute = 0; second = 0; }
 }
