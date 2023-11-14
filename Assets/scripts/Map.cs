@@ -27,6 +27,7 @@ public class Map : MonoBehaviour
     private List<Block> blockList;
     private GameObject emptyObject;
     private Block startBlock, endBlock;
+    private GameObject answerParentObject;
     private void Start()
     {
         startBlock = Instantiate(blocks[7]);
@@ -60,6 +61,10 @@ public class Map : MonoBehaviour
         }
 
     }
+    public GameObject getAnswerParentObject()
+    {
+        return answerParentObject;
+    }
     public void setSize(int r, int c)
     {
         row = r;
@@ -76,11 +81,33 @@ public class Map : MonoBehaviour
         createMapLogic();
         movePointer();
         createBlocks();
+        createAnswerMap();
         shuffleMap();
         createMap();    //interface
         cameraPosition();
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
+    }
+    public void createAnswerMap()
+    {
+        if (answerParentObject != null) Destroy(answerParentObject);
+        answerParentObject = new GameObject("BlocksAnswer");
+        for (var i = 0; i < column; i++)
+        {
+            for (var j = 0; j < row; j++)
+            {
+                Block block;
+                if (mapLogic[i, j] == 8)
+                {
+                    block = blockDecider(0, i, j);
+                }
+                else
+                {
+                    block = blockDecider(mapLogic[i, j], i, j);
+                }
+                block.transform.SetParent(answerParentObject.transform);
+            }
+        }
     }
     public void startGame()
     {
@@ -89,7 +116,7 @@ public class Map : MonoBehaviour
     }
     public void restartScene()
     {
-        findParentDestroy();
+        findParentDestroy("Blocks");
         shuffleMap();
         blockList.Clear();
         createMap();    //interface
@@ -138,7 +165,7 @@ public class Map : MonoBehaviour
     // Creates map interfaces
     private void createMap()
     {
-        findParentDestroy();
+        findParentDestroy("Blocks");
         GameObject parent = new GameObject("Blocks");
         for (var i = 0; i < column; i++)
         {
@@ -154,9 +181,9 @@ public class Map : MonoBehaviour
         }
     }
 
-    private void findParentDestroy()
+    private void findParentDestroy(string parentName)
     {
-        var parent = GameObject.Find("Blocks");
+        var parent = GameObject.Find(parentName);
         if (parent != null) Destroy(parent);
     }
 

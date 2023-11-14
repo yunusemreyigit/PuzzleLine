@@ -26,12 +26,24 @@ public class UIManager : MonoBehaviour
 
     public Text row;
     public Text column;
+
+    public GameObject answerMap;
+    private bool isAnswerOpen = false;
+    public Text answerText;
     private void Awake()
     {
         map = GetComponent<Map>();
     }
+    private void Start()
+    {
+        answerMap = GameObject.Find("BlocksAnswer");
+    }
     private void Update()
     {
+
+        if (isAnswerOpen) { answerMap.SetActive(true); answerText.text = "CLOSE"; }
+        else { answerMap.SetActive(false); answerText.text = "SHOW"; }
+
         GameTimer();
         difficulty.text = map.gameDifficulty().ToString();
 
@@ -93,6 +105,7 @@ public class UIManager : MonoBehaviour
         var y = UnityEngine.Random.Range(3, 7);
         map.setSize(x, y);
         map.startGame();
+        answerMap = map.getAnswerParentObject();
         GameManager.Instance.resetTimer();
 
     }
@@ -108,11 +121,16 @@ public class UIManager : MonoBehaviour
         privateGame.SetActive(false);
         map.setSize(r, c);
         map.startGame();
+        answerMap = map.getAnswerParentObject();
         GameManager.Instance.resetTimer();
 
     }
     public void privateGameExitPanel()
     {
         privateGame.SetActive(false);
+    }
+    public void openAnswer()
+    {
+        isAnswerOpen = isAnswerOpen == true ? false : true;
     }
 }
