@@ -140,6 +140,7 @@ public class InputManager : MonoBehaviour
             SoundManager.Instance.playSfx("Block");
             timer += Time.deltaTime * animSpeed;
             block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
+            block.localScale = Vector2.Lerp(new Vector2(.5f, .5f), Vector2.one, animTime(timer / 2));
             emptyBlock.position = Vector2.Lerp(emptyBlockTemp, blockTemp, animTime(timer));
         }
 

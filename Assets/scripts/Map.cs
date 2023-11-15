@@ -99,11 +99,11 @@ public class Map : MonoBehaviour
                 Block block;
                 if (mapLogic[i, j] == 8)
                 {
-                    block = blockDecider(0, i, j);
+                    block = blockDecider(0, i, j, false);
                 }
                 else
                 {
-                    block = blockDecider(mapLogic[i, j], i, j);
+                    block = blockDecider(mapLogic[i, j], i, j, false);
                 }
                 block.transform.SetParent(answerParentObject.transform);
             }
@@ -171,7 +171,7 @@ public class Map : MonoBehaviour
         {
             for (var j = 0; j < row; j++)
             {
-                Block block = blockDecider(mapLogic[i, j], i, j);
+                Block block = blockDecider(mapLogic[i, j], i, j, true);
                 if (mapLogic[i, j] == 8)
                 {
                     emptyObject = block.gameObject;
@@ -278,11 +278,11 @@ public class Map : MonoBehaviour
         float y = row / 2.0f;
         Camera.main.transform.position = new Vector3(x, y, -10);
     }
-    Block blockDecider(int number, int x, int y)
+    Block blockDecider(int number, int x, int y, bool addBlockList)
     {
         Block block = Instantiate(blocks[number], new Vector2(x, y), Quaternion.identity);
         block.name = number.ToString();
-        if (number != 8)
+        if (number != 8 && addBlockList == true)
             blockList.Add(block);
         return block;
     }

@@ -1,5 +1,4 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,6 +40,9 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
 
+        if (answerMap == null)
+            answerMap = map.getAnswerParentObject();
+
         if (isAnswerOpen) { answerMap.SetActive(true); answerText.text = "CLOSE"; }
         else { answerMap.SetActive(false); answerText.text = "SHOW"; }
 
@@ -81,6 +83,7 @@ public class UIManager : MonoBehaviour
         xpBar.localScale = new Vector3(x, .7f, 1);
         if (x >= 1)
         {
+            SoundManager.Instance.playSfx("IncreaseLevel");
             xpBar.localScale = new(0, 1, 1);
             GameManager.Instance.addLevel();
         }
@@ -92,6 +95,7 @@ public class UIManager : MonoBehaviour
 
     public void restartGame()
     {
+        SoundManager.Instance.playSfx("Button");
         map.restartScene();
         GameManager.Instance.resetTimer();
     }
@@ -101,6 +105,7 @@ public class UIManager : MonoBehaviour
     }
     public void randomMap()
     {
+        SoundManager.Instance.playSfx("Button");
         var x = UnityEngine.Random.Range(3, 7);
         var y = UnityEngine.Random.Range(3, 7);
         map.setSize(x, y);
@@ -131,6 +136,7 @@ public class UIManager : MonoBehaviour
     }
     public void openAnswer()
     {
+        SoundManager.Instance.playSfx("Button");
         isAnswerOpen = isAnswerOpen == true ? false : true;
     }
 }
