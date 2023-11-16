@@ -144,6 +144,7 @@ public class Map : MonoBehaviour
                 if (item.blockCounter != 2) return false;
             }
         }
+        GameManager.Instance.resetTimer();
         GameManager.Instance.addXp(solutionMap.Count);
         startGame();
         Debug.Log("Game Over Successfully !");

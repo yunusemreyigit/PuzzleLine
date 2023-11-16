@@ -52,7 +52,6 @@ public class UIManager : MonoBehaviour
         if (map.isFinished())
         {
             timer = 0;
-            GameManager.Instance.resetTimer();
         }
 
         if (timer >= 1)
