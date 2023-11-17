@@ -103,7 +103,7 @@ public class InputManager : MonoBehaviour
             }
             if (touch.phase == TouchPhase.Ended)
             {
-                if (block == null) return;
+                if (block != null) block = null;
                 var endpos = touch.position;
                 float x = endpos.x - startPosition.x;
                 float y = endpos.y - startPosition.y;
@@ -135,6 +135,7 @@ public class InputManager : MonoBehaviour
             return;
         }
 
+
         if (isTouched && Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
         {
             SoundManager.Instance.playSfx("Block");
@@ -142,6 +143,10 @@ public class InputManager : MonoBehaviour
             block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
             block.localScale = Vector2.Lerp(new Vector2(.5f, .5f), Vector2.one, animTime(timer / 2));
             emptyBlock.position = Vector2.Lerp(emptyBlockTemp, blockTemp, animTime(timer));
+        }
+        else
+        {
+            isTouched = false;
         }
 
         if (map.isFinished())
@@ -155,7 +160,7 @@ public class InputManager : MonoBehaviour
 
     private void changePosEmptyAreaWithoutTouch(Vector2 vector2)
     {
-        if ((Vector2)block.position - (Vector2)emptyBlock.position == vector2)
+        if (blockTemp - (Vector2)emptyBlock.position == vector2)
         {
             Touched();
         }

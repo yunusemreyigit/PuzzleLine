@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public Button restartButton;
-    public Button ThreeButton;
-    public Button FourButton;
     private Map map;
 
     public RectTransform xpBar;
@@ -25,6 +22,8 @@ public class UIManager : MonoBehaviour
 
     public Text row;
     public Text column;
+    public Slider rowScroll;
+    public Slider colScroll;
 
     public GameObject answerMap;
     private bool isAnswerOpen = false;
@@ -40,6 +39,8 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
 
+        row.text = "ROW : " + rowScroll.value;
+        column.text = "COLUMN : " + colScroll.value;
         if (answerMap == null)
             answerMap = map.getAnswerParentObject();
 
@@ -119,9 +120,9 @@ public class UIManager : MonoBehaviour
     }
     public void startPrivateGame()
     {
-        int r = short.Parse(row.text);
-        int c = short.Parse(column.text);
-        if (r > 10 || c > 10 || r < 3 || c < 3) return;
+        int r = (int)rowScroll.value;
+        int c = (int)colScroll.value;
+
         privateGame.SetActive(false);
         map.setSize(r, c);
         map.startGame();
