@@ -6,17 +6,17 @@ public class InputManager : MonoBehaviour
     private Touch touch;
     private Touch touch1;
     private Vector2 startPosition, startWorldPos;
-    private Transform block;
+    [SerializeField] private Transform block;
     private Transform emptyBlock;
     private Map map;
     private Vector2 fingerPos;
     public static InputManager Instance;
 
-    Vector2 blockTemp;
+    [SerializeField] Vector2 blockTemp;
     private Vector2 emptyBlockTemp;
     private float timer = 0;
     public float animSpeed = 1;
-    private bool isTouched = false;
+    [SerializeField] private bool isTouched = false;
 
     private float distance = 0;
     Vector2 moveStartPosition;
@@ -103,10 +103,10 @@ public class InputManager : MonoBehaviour
             }
             if (touch.phase == TouchPhase.Ended)
             {
-                if (block != null) block = null;
                 var endpos = touch.position;
                 float x = endpos.x - startPosition.x;
                 float y = endpos.y - startPosition.y;
+                // Debug.Log("x : " + x + " y : " + y);
                 if (Mathf.Abs(x) > Mathf.Abs(y))
                 {
                     if (x > 0) changePosEmptyAreaWithoutTouch(Vector2.left);
@@ -122,8 +122,8 @@ public class InputManager : MonoBehaviour
         }
         if (timer >= 1)
         {
+            emptyBlock.position = blockTemp;
             block.position = emptyBlockTemp;
-            emptyBlock.position = startWorldPos;
             blockTemp = block.position;
             timer = 0;
             isTouched = false;
@@ -136,18 +136,22 @@ public class InputManager : MonoBehaviour
         }
 
 
-        if (isTouched && Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
+        if (isTouched)
         {
-            SoundManager.Instance.playSfx("Block");
-            timer += Time.deltaTime * animSpeed;
-            block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
-            block.localScale = Vector2.Lerp(new Vector2(.5f, .5f), Vector2.one, animTime(timer / 2));
-            emptyBlock.position = Vector2.Lerp(emptyBlockTemp, blockTemp, animTime(timer));
+            if (Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
+            {
+                SoundManager.Instance.playSfx("Block");
+                timer += Time.deltaTime * animSpeed;
+                block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
+                block.localScale = Vector2.Lerp(new Vector2(.5f, .5f), Vector2.one, animTime(timer / 2));
+                emptyBlock.position = Vector2.Lerp(emptyBlockTemp, blockTemp, animTime(timer));
+            }
+            else
+            {
+                isTouched = false;
+            }
         }
-        else
-        {
-            isTouched = false;
-        }
+
 
         if (map.isFinished())
         {
@@ -163,6 +167,10 @@ public class InputManager : MonoBehaviour
         if (blockTemp - (Vector2)emptyBlock.position == vector2)
         {
             Touched();
+        }
+        else
+        {
+            isTouched = false;
         }
     }
 

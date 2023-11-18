@@ -1353,7 +1353,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 43
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -4036,7 +4036,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447357a9e3cb3864ca6fa70b69f68a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  block: {fileID: 0}
+  blockTemp: {x: 0, y: 0}
   animSpeed: 8
+  isTouched: 0
 --- !u!114 &2036224890
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        requiredXp = calculateRequiredXp(level);
         dataObject data = FileManager.Instance.loadFromJSON("data");
         level = data.level;
+        requiredXp = calculateRequiredXp(level);
         currentXp = data.xp;
     }
     private void Update()
