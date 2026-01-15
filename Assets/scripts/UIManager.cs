@@ -26,8 +26,17 @@ public class UIManager : MonoBehaviour
     public Slider colScroll;
 
     public GameObject answerMap;
+    public GameObject blocks;
     private bool isAnswerOpen = false;
     public Text answerText;
+    public GameObject guidePanel;
+    private bool isguideOpen = false;
+    public GameObject stopGamePanel;
+    private bool sound = true;
+    public Image soundImage;
+    public Sprite soundOn;
+    public Sprite soundOff;
+
     private void Awake()
     {
         map = GetComponent<Map>();
@@ -35,6 +44,7 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         answerMap = GameObject.Find("BlocksAnswer");
+        blocks = GameObject.Find("Blocks");
     }
     private void Update()
     {
@@ -43,9 +53,19 @@ public class UIManager : MonoBehaviour
         column.text = "COLUMN : " + colScroll.value;
         if (answerMap == null)
             answerMap = map.getAnswerParentObject();
-
-        if (isAnswerOpen) { answerMap.SetActive(true); answerText.text = "CLOSE"; }
-        else { answerMap.SetActive(false); answerText.text = "SHOW"; }
+        if(blocks == null)
+            blocks = GameObject.Find("Blocks");
+            
+        if (isAnswerOpen) {
+             answerMap.SetActive(true); 
+             answerText.text = "CLOSE"; 
+             blocks.SetActive(false);
+        }
+        else { 
+            answerMap.SetActive(false); 
+            answerText.text = "ANSWER"; 
+            blocks.SetActive(true);
+        }
 
         GameTimer();
         difficulty.text = map.gameDifficulty().ToString();
@@ -67,6 +87,9 @@ public class UIManager : MonoBehaviour
         int v = GameManager.Instance.getLevel();
         currLevel.text = v.ToString();
         nextLevel.text = (v + 1).ToString();
+
+        if (isguideOpen) { guidePanel.SetActive(true); }
+        else { guidePanel.SetActive(false); }
     }
 
     private void GameTimer()
@@ -97,7 +120,6 @@ public class UIManager : MonoBehaviour
     {
         SoundManager.Instance.playSfx("Button");
         map.restartScene();
-        GameManager.Instance.resetTimer();
     }
     public void getPrivatePanel()
     {
@@ -139,4 +161,43 @@ public class UIManager : MonoBehaviour
         SoundManager.Instance.playSfx("Button");
         isAnswerOpen = isAnswerOpen == true ? false : true;
     }
+    public void openGuidePanel()
+    {
+        SoundManager.Instance.playSfx("Button");
+        isguideOpen = isguideOpen != true;
+    }
+
+    public void stopGame()
+    {
+        SoundManager.Instance.playSfx("Button");
+        Time.timeScale = 0;
+        stopGamePanel.SetActive(true);
+    }
+    public void continueGame()
+    {
+        SoundManager.Instance.playSfx("Button");
+        Time.timeScale = 1;
+        stopGamePanel.SetActive(false);
+    }
+    public void openInstruction()
+    {
+        SoundManager.Instance.playSfx("Button");
+        instractionPanel.SetActive(true);
+    }
+    public void soundOptions()
+    {
+        SoundManager.Instance.playSfx("Button");
+        sound = sound != true;
+        if (sound)
+        {
+            SoundManager.Instance.soundOn();
+            soundImage.sprite = soundOn;
+        }
+        else
+        {
+            SoundManager.Instance.soundOff();
+            soundImage.sprite = soundOff;
+        }
+    }
+
 }

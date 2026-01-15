@@ -125,6 +125,7 @@ public class InputManager : MonoBehaviour
             emptyBlock.position = blockTemp;
             block.position = emptyBlockTemp;
             blockTemp = block.position;
+            SoundManager.Instance.playNotes("2");
             timer = 0;
             isTouched = false;
             block = null;
@@ -140,7 +141,6 @@ public class InputManager : MonoBehaviour
         {
             if (Vector2.Distance((Vector2)block.position, emptyBlockTemp) <= 1)
             {
-                SoundManager.Instance.playSfx("Block");
                 timer += Time.deltaTime * animSpeed;
                 block.position = Vector2.Lerp(blockTemp, emptyBlockTemp, animTime(timer));
                 block.localScale = Vector2.Lerp(new Vector2(.5f, .5f), Vector2.one, animTime(timer / 2));
@@ -155,6 +155,7 @@ public class InputManager : MonoBehaviour
 
         if (map.isFinished())
         {
+            SoundManager.Instance.playSfx("Finish");
             timer = 0;
             isTouched = false;
             block = null;

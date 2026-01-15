@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
 0 - Empty Bloc
+1 - UD
+2 - LR
+3 - UR
+4 - UL
+5 - DL
+6 - DR
 7 - Start End Block
 8 - Empty Area
 */
@@ -36,44 +42,6 @@ public class Map : MonoBehaviour
         blockList = new List<Block>();
         initializeMethods();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-            initializeMethods();
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            Vector2 v1 = new Vector2(1, 1);
-            Vector2 v2 = new Vector2(2, 1);
-            Vector2 v3 = new Vector2(2, 2);
-
-            Debug.Log(v2 - v1);
-            Debug.Log(v3 - v2);
-            if ((v2 - v1) == Vector2.right)
-            {
-                (v2 - v1).Normalize();
-                Debug.Log("right");
-            }
-            if ((v3 - v2) == Vector2.up)
-            {
-                Debug.Log("up");
-            }
-
-        }
-
-    }
-    public GameObject getAnswerParentObject()
-    {
-        return answerParentObject;
-    }
-    public void setSize(int r, int c)
-    {
-        row = r;
-        column = c;
-    }
-    public Transform getEmptyAreaTransform()
-    {
-        return emptyObject.transform;
-    }
     [ContextMenu(nameof(initializeMethods))]
     void initializeMethods()
     {
@@ -88,6 +56,20 @@ public class Map : MonoBehaviour
         startBlock.transform.position = startPointMap;
         endBlock.transform.position = endPointMap;
     }
+    public GameObject getAnswerParentObject()
+    {
+        return answerParentObject;
+    }
+    public void setSize(int r, int c)
+    {
+        row = r;
+        column = c;
+    }
+    public Transform getEmptyAreaTransform()
+    {
+        return emptyObject.transform;
+    }
+
     public void createAnswerMap()
     {
         if (answerParentObject != null) Destroy(answerParentObject);
@@ -274,7 +256,6 @@ public class Map : MonoBehaviour
 
     private void cameraPosition()
     {
-
         float x = column / 2.0f;
         float y = row / 2.0f;
         Camera.main.transform.position = new Vector3(x, y, -10);

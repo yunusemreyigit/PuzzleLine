@@ -27,7 +27,7 @@ public class FileManager : MonoBehaviour
         Debug.Log("Loaded from :" + savingPath(fileName));
         return data;
     }
-    private String savingPath(string file)
+    private string savingPath(string file)
     {
         return Application.persistentDataPath + "/" + file;
     }

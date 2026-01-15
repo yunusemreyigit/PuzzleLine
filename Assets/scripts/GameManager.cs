@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         dataObject data = FileManager.Instance.loadFromJSON("data");
+        Debug.Log("Level : " + level + "\nCurrent XP : " + currentXp);
         level = data.level;
         requiredXp = calculateRequiredXp(level);
         currentXp = data.xp;

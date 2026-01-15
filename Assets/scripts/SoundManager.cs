@@ -18,6 +18,7 @@ public class SoundManager : MonoBehaviour
     }
     public Sound[] sfxSound;
     public AudioSource sfxAudioSource;
+    public AudioSource noteAudioSource;
 
     public void playSfx(string sfxName)
     {
@@ -26,5 +27,23 @@ public class SoundManager : MonoBehaviour
             sfxAudioSource.clip = item.audio;
         }
         sfxAudioSource.Play();
+    }
+    public void playNotes(string noteName)
+    {
+        foreach (var item in sfxSound.Where(item => item.name == noteName))
+        {
+            noteAudioSource.clip = item.audio;
+        }
+        noteAudioSource.Play();
+    }
+    public void soundOff()
+    {
+        noteAudioSource.mute = true;
+        sfxAudioSource.mute = true;
+    }
+    public void soundOn()
+    {
+        noteAudioSource.mute = false;
+        sfxAudioSource.mute = false;
     }
 }
