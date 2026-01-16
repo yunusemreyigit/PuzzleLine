@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 /*
 0 - Empty Bloc
 1 - UD
@@ -88,6 +90,7 @@ public class Map : MonoBehaviour
                     block = blockDecider(mapLogic[i, j], i, j, false);
                 }
                 block.transform.SetParent(answerParentObject.transform);
+                block.tag = "Untagged";
             }
         }
     }
@@ -129,7 +132,6 @@ public class Map : MonoBehaviour
         GameManager.Instance.resetTimer();
         GameManager.Instance.addXp(solutionMap.Count);
         startGame();
-        Debug.Log("Game Over Successfully !");
         return true;
     }
     public Transform moveBlock(Vector2 position)

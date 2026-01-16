@@ -100,6 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockCounter: 0
+  neighbourBlocks: []
+  animSeconds: 0
+  activeBlock: 1
 --- !u!58 &825415851984014606
 CircleCollider2D:
   m_ObjectHideFlags: 0

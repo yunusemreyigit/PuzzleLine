@@ -100,6 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockCounter: 0
+  neighbourBlocks: []
+  animSeconds: 0
+  activeBlock: 1
 --- !u!61 &5034906936031720174
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -29,6 +29,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _BlockProcess: 0
     - _InvertHDirection: 0
     - _InvertVDirection: 1
     m_Colors: []

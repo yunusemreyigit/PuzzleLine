@@ -16,6 +16,7 @@ Material:
   m_InvalidKeywords:
   - _INVERDIRECTION_ON
   - _INVERTDIRECTION_ON
+  - _INVERTHDIRECTION_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -30,5 +31,6 @@ Material:
     m_Floats:
     - _BlockProcess: 0
     - _Mode: 1
+    - _ReverseFill: 0
     m_Colors: []
   m_BuildTextureStacks: []

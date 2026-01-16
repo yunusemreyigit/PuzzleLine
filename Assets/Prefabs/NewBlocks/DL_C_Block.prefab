@@ -100,6 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockCounter: 0
+  neighbourBlocks: []
+  animSeconds: 0
+  activeBlock: 1
 --- !u!50 &-4847467580301780972
 Rigidbody2D:
   serializedVersion: 4
@@ -156,7 +159,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.4, y: 0.4}
